@@ -1,0 +1,57 @@
+67. Add Binary
+Easy
+Given two binary strings, return their sum (also a binary string).
+
+The input strings are both non-empty and contains only characters 1 or 0.
+
+Example 1:
+
+Input: a = "11", b = "1"
+Output: "100"
+Example 2:
+
+Input: a = "1010", b = "1011"
+Output: "10101"
+
+var addBinary = function(a, b) {
+  //将计算位左对齐
+  var [a2Arr, b2Arr] = [a.split("").reverse(), b.split("").reverse()];
+  //定义进位 carry 
+  var [lena, lenb, carry, result] = [a.length, b.length, 0, []];
+  //取得较长数组进行遍历，以确保完全迭代
+  var lenMax = Math.max(lena,lenb);
+  for (var i = 0; i < lenMax; i++) {
+      //每一项的值为两数组对应项数字和加上进位值
+      //括号前面的加号代表类型转换，转换不了就置0
+      var itemSum = +(a2Arr[i] || 0) + +(b2Arr[i] || 0) + carry;
+      //根据每项值来定义结果位和进位
+      if(itemSum == 0){
+          result[i] = 0;
+          carry = 0;
+      }else if(itemSum == 1){
+          result[i] = 1;
+          carry = 0;
+      }else if(itemSum == 2){
+          result[i] = 0;
+          carry = 1;
+      }else{
+          result[i] = 1;
+          carry = 1;
+      }
+  }
+  //若最高位发生进位，插入1
+  if (carry == 1) result.push(1);
+  //反序并连接为字符串
+  return result.reverse().join("");
+};
+代码解析：
+因为我个人觉得左对齐对计算更方便，所以我将输入字符串转变为了数组并反序排序，这样就是左对齐的了。然后定义了进位 carry ，其在计算中起着进位的作用。我们将遍历长度最长的数组（lenMax），以确保完全迭代。其中每一项的和都由两个数组对应位的数值加上进位值。加号“+”除了可以作为运算符，还起着类型转换的作用，其将字符串类型转换为数字类型；当无法转换时，以0代替。然后我们根据每项的和，确定结果中该位的值。
+
+和为0，结果中该位为0，未发生进位，carry为0，
+和为1，结果中该位为1，未发生进位，carry为0，
+和为2，结果中该位为0，因为二进制1+1=0（去掉了进位1）,，发生了进位，carry为1，
+和为其他（3），结果中该位为1，因为二进制1+1+1=1（去掉了进位1），发生了进位，carry为1
+如果当迭代完，进位carry仍然为1，此时，在数组末尾添加1作为最高位。最后，将结果反序并组合为字符串输出即可
+————————————————
+版权声明：本文为CSDN博主「Jealyn」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_30216191/article/details/81545044
